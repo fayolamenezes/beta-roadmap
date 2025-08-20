@@ -32,7 +32,6 @@
       height: 10px;
       background: #fff;
       transform: translate(-50%, -50%);
-      /* square, no border-radius */
     }
 
     .text {
@@ -64,25 +63,25 @@
 
       <!-- Top -->
       <div class="dot" style="top: 5%; left: 50%;"></div>
-      <div class="text" style="top: -15%; left: 50%; transform: translateX(-50%);">
+      <div class="text" style="top: calc(5% - 65px); left: 50%; transform: translateX(-50%);">
         Q1 2026 (Beta): Core SEO toolkit
       </div>
 
       <!-- Right -->
       <div class="dot" style="top: 50%; left: 95%;"></div>
-      <div class="text" style="top: 50%; left: 108%; transform: translateY(-50%);">
+      <div class="text" style="top: 50%; left: calc(95% + 25px); transform: translateY(-50%);">
         Q2 2027+: Agency portal, expanded backlink suite
       </div>
 
       <!-- Bottom -->
       <div class="dot" style="top: 95%; left: 50%;"></div>
-      <div class="text" style="top: 110%; left: 50%; transform: translateX(-50%);">
+      <div class="text" style="top: calc(95% + 15px); left: 50%; transform: translateX(-50%);">
         Q3 2026: Link Building + AI features
       </div>
 
       <!-- Left -->
       <div class="dot" style="top: 50%; left: 5%;"></div>
-      <div class="text" style="top: 50%; left: -15%; transform: translateY(-50%);">
+      <div class="text" style="top: 50%; left: calc(5% - 215px); transform: translateY(-50%);">
         Q4 2026 (Public): Advanced analytics, competitor insights, integrations
       </div>
     </div>
@@ -109,7 +108,6 @@
         markers: false
       },
       onUpdate: () => {
-        // get current rotation of hand
         let matrix = window.getComputedStyle(hand).transform;
         if (matrix !== "none") {
           let values = matrix.split('(')[1].split(')')[0].split(',');
@@ -117,18 +115,16 @@
           let angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
           if (angle < 0) angle += 360;
 
-          // update opacity of texts relative to distance from hand
           texts.forEach((txt, i) => {
             let dist = Math.abs(angle - dotAngles[i]);
-            dist = Math.min(dist, 360 - dist); // shortest distance around circle
-            let opacity = Math.max(0, 1 - dist / 45); // fade within ±45deg
+            dist = Math.min(dist, 360 - dist);
+            let opacity = Math.max(0, 1 - dist / 45);
             txt.style.opacity = opacity;
           });
         }
       }
     });
 
-    // animate hand around full circle
     tl.to("#hand", { rotate: 360, duration: 1, ease: "none" });
   </script>
 </body>
