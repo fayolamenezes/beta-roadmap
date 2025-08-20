@@ -1,131 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clock Scroll Animation</title>
-  <style>
-    body {
-      margin: 0;
-      height: 400vh; /* enough scroll space */
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    .section {
-      height: 100vh;   /* full screen */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .container {
-      position: relative;
-      width: 400px;
-      height: 400px;
-    }
-
-    .dot {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background: #fff;
-      transform: translate(-50%, -50%);
-    }
-
-    .text {
-      position: absolute;
-      font-size: 16px;
-      max-width: 200px;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 0.1s linear;
-      line-height: 1.4em;
-    }
-
-    .hand {
-      position: absolute;
-      width: 10px;        /* rectangle width */
-      height: 160px;      /* rectangle length */
-      background: #fff;
-      top: 50%;
-      left: 50%;
-      transform-origin: bottom center;
-      transform: translate(-50%, -100%) rotate(0deg);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clock Scroll Animation</title>
+<style>
+body {
+  margin: 0;
+  height: 400vh;
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+.section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  position: relative;
+  width: 400px;
+  height: 400px;
+}
+.dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+.floating-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.text {
+  position: absolute;
+  font-size: 16px;
+  max-width: 200px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s linear;
+  line-height: 1.4em;
+}
+.hand {
+  position: absolute;
+  width: 10px;
+  height: 160px;
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  transform-origin: bottom center;
+  transform: translate(-50%, -100%) rotate(0deg);
+}
+</style>
 </head>
 <body>
-  <div class="section">
-    <div class="container">
-      <div class="hand" id="hand"></div>
+<div class="section">
+  <div class="container" id="container">
+    <div class="hand" id="hand"></div>
 
-      <!-- Top -->
-      <div class="dot" style="top: 5%; left: 50%;"></div>
-      <div class="text" style="top: calc(5% - 65px); left: 50%; transform: translateX(-50%);">
-        Q1 2026 (Beta): Core SEO toolkit
-      </div>
-
-      <!-- Right -->
-      <div class="dot" style="top: 50%; left: 95%;"></div>
-      <div class="text" style="top: 50%; left: calc(95% + 25px); transform: translateY(-50%);">
-        Q2 2027+: Agency portal, expanded backlink suite
-      </div>
-
-      <!-- Bottom -->
-      <div class="dot" style="top: 95%; left: 50%;"></div>
-      <div class="text" style="top: calc(95% + 15px); left: 50%; transform: translateX(-50%);">
-        Q3 2026: Link Building + AI features
-      </div>
-
-      <!-- Left -->
-      <div class="dot" style="top: 50%; left: 5%;"></div>
-      <div class="text" style="top: 50%; left: calc(5% - 215px); transform: translateY(-50%);">
-        Q4 2026 (Public): Advanced analytics, competitor insights, integrations
-      </div>
+    <!-- Dots + Labels -->
+    <div class="dot" id="dot-top" style="top: 5%; left: 50%;"></div>
+    <div class="text" style="top: calc(5% - 65px); left: 50%; transform: translateX(-50%);">
+      Q1 2026 (Beta): Core SEO toolkit
+    </div>
+    <div class="dot" id="dot-right" style="top: 50%; left: 95%;"></div>
+    <div class="text" style="top: 50%; left: calc(95% + 25px); transform: translateY(-50%);">
+      Q2 2027+: Agency portal, expanded backlink suite
+    </div>
+    <div class="dot" id="dot-bottom" style="top: 95%; left: 50%;"></div>
+    <div class="text" style="top: calc(95% + 15px); left: 50%; transform: translateX(-50%);">
+      Q3 2026: Link Building + AI features
+    </div>
+    <div class="dot" id="dot-left" style="top: 50%; left: 5%;"></div>
+    <div class="text" style="top: 50%; left: calc(5% - 215px); transform: translateY(-50%);">
+      Q4 2026 (Public): Advanced analytics, competitor insights, integrations
     </div>
   </div>
+</div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script>
-    gsap.registerPlugin(ScrollTrigger);
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
 
-    const texts = document.querySelectorAll(".text");
-    const hand = document.querySelector("#hand");
+const container = document.getElementById("container");
+const hand = document.getElementById("hand");
+const dots = [
+  document.getElementById("dot-top"),
+  document.getElementById("dot-right"),
+  document.getElementById("dot-bottom"),
+  document.getElementById("dot-left")
+];
+const texts = document.querySelectorAll(".text");
+const dotAngles = [0, 90, 180, 270];
+const centerX = container.offsetWidth / 2;
+const centerY = container.offsetHeight / 2;
+const totalHeight = hand.offsetHeight;
 
-    // angles for each step (degrees)
-    const dotAngles = [0, 90, 180, 270];
+let detached = [false, false, false, false];
+let allDetached = false;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".section",
-        start: "top top",
-        end: "+=4000",
-        scrub: true,
-        pin: true,
-        markers: false
-      },
-      onUpdate: () => {
-        let matrix = window.getComputedStyle(hand).transform;
-        if (matrix !== "none") {
-          let values = matrix.split('(')[1].split(')')[0].split(',');
-          let a = values[0], b = values[1];
-          let angle = Math.round(Math.atan2(b, a) * (180/Math.PI));
-          if (angle < 0) angle += 360;
+function getHandTipPosition(angle) {
+  const scaleY = hand._gsTransform?.scaleY || 1;
+  const rad = angle * Math.PI / 180;
+  return {
+    x: centerX + Math.sin(rad) * totalHeight * scaleY,
+    y: centerY - Math.cos(rad) * totalHeight * scaleY
+  };
+}
 
-          texts.forEach((txt, i) => {
-            let dist = Math.abs(angle - dotAngles[i]);
-            dist = Math.min(dist, 360 - dist);
-            let opacity = Math.max(0, 1 - dist / 45);
-            txt.style.opacity = opacity;
+const tl = gsap.timeline({
+  scrollTrigger: {
+    trigger: ".section",
+    start: "top top",
+    end: "+=4000",
+    scrub: true,
+    pin: true
+  },
+  onUpdate: () => {
+    const transform = window.getComputedStyle(hand).transform;
+    if(transform !== "none") {
+      const values = transform.split("(")[1].split(")")[0].split(",");
+      const a = parseFloat(values[0]), b = parseFloat(values[1]);
+      let angle = Math.atan2(b, a) * (180 / Math.PI);
+      if(angle < 0) angle += 360;
+
+      // DETACH DOTS
+      dotAngles.forEach((da, i) => {
+        if(!detached[i] && angle >= da) {
+          detached[i] = true;
+          const tip = getHandTipPosition(da);
+          const piece = document.createElement("div");
+          piece.classList.add("floating-piece");
+          piece.style.left = tip.x + "px";
+          piece.style.top = tip.y + "px";
+          container.appendChild(piece);
+
+          const dotRect = dots[i].getBoundingClientRect();
+          const contRect = container.getBoundingClientRect();
+          const targetX = dotRect.left - contRect.left + dots[i].offsetWidth/2;
+          const targetY = dotRect.top - contRect.top + dots[i].offsetHeight/2;
+
+          gsap.to(piece, {
+            x: targetX - tip.x,
+            y: targetY - tip.y,
+            duration: 0.8,
+            ease: "power2.out",
+            onComplete: () => {
+              gsap.set(dots[i], {opacity: 1});
+              piece.remove();
+            }
           });
-        }
-      }
-    });
 
-    tl.to("#hand", { rotate: 360, duration: 1, ease: "none" });
-  </script>
+          const piecesDropped = detached.filter(Boolean).length;
+          gsap.to(hand, { scaleY: (totalHeight - piecesDropped*10)/totalHeight, duration: 0.3 });
+          gsap.to(texts[i], {opacity: 1, duration: 0.8});
+        }
+      });
+
+      // REATTACH DOTS ONLY AFTER LAST DOT
+      if(detached.every(Boolean) && angle < 360) {
+        if(!allDetached) return; // wait until user scrolls back
+      }
+
+      if(detached.every(Boolean) && angle < 0.5) {
+        // animate all detached dots back to hand at once
+        dots.forEach((dot, i) => {
+          const dotRect = dot.getBoundingClientRect();
+          const contRect = container.getBoundingClientRect();
+          const startX = dotRect.left - contRect.left + dot.offsetWidth/2;
+          const startY = dotRect.top - contRect.top + dot.offsetHeight/2;
+          const tip = { x: centerX, y: centerY - totalHeight };
+          const piece = document.createElement("div");
+          piece.classList.add("floating-piece");
+          piece.style.left = startX + "px";
+          piece.style.top = startY + "px";
+          container.appendChild(piece);
+
+          gsap.to(piece, {
+            x: tip.x - startX,
+            y: tip.y - startY,
+            duration: 0.8,
+            ease: "power2.in",
+            onComplete: () => {
+              gsap.set(dot, {opacity: 0});
+              piece.remove();
+            }
+          });
+
+          detached[i] = false;
+          gsap.to(texts[i], {opacity: 0, duration: 0.5});
+        });
+        gsap.to(hand, { scaleY: 1, duration: 0.3 });
+        detachOrder = [];
+        allDetached = false;
+      }
+
+      if(detached.every(Boolean)) allDetached = true;
+    }
+  }
+});
+
+// rotate hand full circle
+tl.to(hand, { rotate: 360, duration: 1, ease: "none" });
+</script>
 </body>
 </html>
