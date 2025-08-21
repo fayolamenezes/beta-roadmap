@@ -26,6 +26,7 @@ body {
   position: relative;
   width: 400px;
   height: 400px;
+  overflow: visible;
 }
 
 .dot {
@@ -64,15 +65,42 @@ body {
 /* UPDATED TEXT STYLING */
 .text {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: 16px;
   font-weight: 600;
   color: #FFA615;
-  max-width: 220px;
-  text-align: center;
-  line-height: 1.5em;
+  min-width: 220px;        
+  max-width: 260px;
   opacity: 0;
   transition: opacity 0.3s linear;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  white-space: nowrap;
+}
+
+.text-main {
+  font-size: 20px;
+  font-weight: 600;
+  color: #FFA615;
+  text-align: center;
+}
+
+.text-sub {
+  font-size: 14px;
+  color: #fff;
+  margin-top: 2px;
+}
+
+/* Special cases for left/right */
+.text-right .text-sub {
+  text-align: left;
+  align-self: flex-start;
+}
+
+.text-left .text-sub {
+  text-align: right;
+  align-self: flex-end;
 }
 
 .hand {
@@ -94,22 +122,22 @@ body {
 
     <!-- Main dots + Labels -->
     <div class="dot" id="dot-top" style="top: 5%; left: 50%;"></div>
-    <div class="text" style="top: calc(5% - 60px); left: 50%; transform: translateX(-50%);">
+    <div class="text" style="top: calc(5% - 30px); left: 50%; transform: translate(-50%, -100%);">
       Q1 2026 (Beta): Core SEO toolkit
     </div>
 
     <div class="dot" id="dot-right" style="top: 50%; left: 95%;"></div>
-    <div class="text" style="top: 50%; left: calc(95% + 20px); transform: translateY(-50%); text-align: left;">
+    <div class="text text-right" style="top: 50%; left: calc(95% + 30px); transform: translateY(-50%);">
       Q2 2027+: Agency portal, expanded backlink suite
     </div>
 
     <div class="dot" id="dot-bottom" style="top: 95%; left: 50%;"></div>
-    <div class="text" style="top: calc(95% + 15px); left: 50%; transform: translateX(-50%);">
+    <div class="text" style="top: calc(95% + 30px); left: 50%; transform: translate(-50%, 0);">
       Q3 2026: Link Building + AI features
     </div>
 
     <div class="dot" id="dot-left" style="top: 50%; left: 5%;"></div>
-    <div class="text" style="top: 50%; right: calc(100% - 5% + 20px); transform: translateY(-50%); text-align: right;">
+    <div class="text text-left" style="top: 50%; left: calc(5% - 30px); transform: translate(-100%, -50%);">
       Q4 2026 (Public): Advanced analytics, competitor insights, integrations
     </div>
   </div>
@@ -130,6 +158,14 @@ const mainDots = [
   document.getElementById("dot-left")
 ];
 const texts = document.querySelectorAll(".text");
+
+/* --- SPLIT TEXTS AT ":" --- */
+texts.forEach(el => {
+  const parts = el.textContent.split(":");
+  if (parts.length > 1) {
+    el.innerHTML = `<span class="text-main">${parts[0]}:</span><span class="text-sub">${parts[1].trim()}</span>`;
+  }
+});
 
 const centerX = container.offsetWidth / 2;
 const centerY = container.offsetHeight / 2;
