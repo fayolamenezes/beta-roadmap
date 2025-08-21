@@ -5,24 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clock Scroll Animation</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
+
 body {
   margin: 0;
   height: 400vh;
   background: #111;
   color: #fff;
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
+
 .section {
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .container {
   position: relative;
   width: 400px;
   height: 400px;
 }
+
 .dot {
   position: absolute;
   width: 15px;
@@ -31,6 +36,7 @@ body {
   transform: translate(-50%, -50%);
   opacity: 0;
 }
+
 .mini-dot {
   position: absolute;
   width: 5px;
@@ -47,6 +53,7 @@ body {
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+
 .floating-piece-mini {
   position: absolute;
   background: #fff;
@@ -54,15 +61,20 @@ body {
   pointer-events: none;
 }
 
+/* UPDATED TEXT STYLING */
 .text {
   position: absolute;
   font-size: 16px;
-  max-width: 200px;
+  font-weight: 600;
+  color: #FFA615;
+  max-width: 220px;
   text-align: center;
+  line-height: 1.5em;
   opacity: 0;
   transition: opacity 0.3s linear;
-  line-height: 1.4em;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
+
 .hand {
   position: absolute;
   width: 15px;
@@ -82,12 +94,12 @@ body {
 
     <!-- Main dots + Labels -->
     <div class="dot" id="dot-top" style="top: 5%; left: 50%;"></div>
-    <div class="text" style="top: calc(5% - 65px); left: 50%; transform: translateX(-50%);">
+    <div class="text" style="top: calc(5% - 60px); left: 50%; transform: translateX(-50%);">
       Q1 2026 (Beta): Core SEO toolkit
     </div>
 
     <div class="dot" id="dot-right" style="top: 50%; left: 95%;"></div>
-    <div class="text" style="top: 50%; left: calc(95% + 25px); transform: translateY(-50%);">
+    <div class="text" style="top: 50%; left: calc(95% + 20px); transform: translateY(-50%); text-align: left;">
       Q2 2027+: Agency portal, expanded backlink suite
     </div>
 
@@ -97,7 +109,7 @@ body {
     </div>
 
     <div class="dot" id="dot-left" style="top: 50%; left: 5%;"></div>
-    <div class="text" style="top: 50%; left: calc(5% - 215px); transform: translateY(-50%);">
+    <div class="text" style="top: 50%; right: calc(100% - 5% + 20px); transform: translateY(-50%); text-align: right;">
       Q4 2026 (Public): Advanced analytics, competitor insights, integrations
     </div>
   </div>
@@ -128,12 +140,12 @@ const totalHeight = hand.offsetHeight;
 const allDots = [];
 const mainAngles = [0, 90, 180, 270];
 
-// main dots: 15px, type main
+// main dots
 mainDots.forEach((dot, i) => {
   allDots.push({ el: dot, angle: mainAngles[i], size: 15, type: "main", text: texts[i] });
 });
 
-// mini dots: 10px, type mini
+// mini dots
 for (let i = 0; i < 16; i++) {
   if (i % 4 !== 0) {
     const angleDeg = i * 22.5;
@@ -149,10 +161,8 @@ for (let i = 0; i < 16; i++) {
 }
 
 allDots.sort((a, b) => a.angle - b.angle);
-
 let detached = Array(allDots.length).fill(false);
 
-// ✅ hand tip strictly at given angle
 function getHandTipPosition(angle) {
   const scaleY = gsap.getProperty(hand, "scaleY");
   const effectiveLength = totalHeight * scaleY;
@@ -173,7 +183,6 @@ function updateHandLength() {
   });
 }
 
-// --- helpers ---
 function detachDot(dotObj, i) {
   detached[i] = true;
   const tip = getHandTipPosition(dotObj.angle);
@@ -187,7 +196,6 @@ function detachDot(dotObj, i) {
   const dy = targetY - tip.y;
   const dist = Math.sqrt(dx*dx + dy*dy);
 
-  // prevent top dot showing at start
   if (dist < 1) {
     if (dotObj.angle === 0) return;
     gsap.set(dotObj.el, {opacity: 1});
@@ -251,7 +259,6 @@ function reattachDot(dotObj, i) {
   updateHandLength();
 }
 
-// --- timeline + crossing detection ---
 let lastAngle = 0;
 
 const tl = gsap.timeline({
@@ -294,7 +301,6 @@ const tl = gsap.timeline({
   }
 });
 
-// rotate hand full circle
 tl.to(hand, { rotate: 360, duration: 1, ease: "none" });
 </script>
 </body>
