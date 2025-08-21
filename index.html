@@ -25,9 +25,9 @@ body {
 }
 .dot {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #fff;
+  width: 15px;
+  height: 15px;
+  background: #D45427;
   transform: translate(-50%, -50%);
   opacity: 0;
 }
@@ -39,12 +39,21 @@ body {
   transform: translate(-50%, -50%);
   opacity: 0;
 }
-.floating-piece {
+
+/* ✨ Floating pieces */
+.floating-piece-main {
+  position: absolute;
+  background: #D45427;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.floating-piece-mini {
   position: absolute;
   background: #fff;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
+
 .text {
   position: absolute;
   font-size: 16px;
@@ -56,7 +65,7 @@ body {
 }
 .hand {
   position: absolute;
-  width: 10px;
+  width: 15px;
   height: 160px;
   background: #fff;
   top: 50%;
@@ -119,10 +128,12 @@ const totalHeight = hand.offsetHeight;
 const allDots = [];
 const mainAngles = [0, 90, 180, 270];
 
+// main dots: 15px, type main
 mainDots.forEach((dot, i) => {
-  allDots.push({ el: dot, angle: mainAngles[i], size: 10, text: texts[i] });
+  allDots.push({ el: dot, angle: mainAngles[i], size: 15, type: "main", text: texts[i] });
 });
 
+// mini dots: 10px, type mini
 for (let i = 0; i < 16; i++) {
   if (i % 4 !== 0) {
     const angleDeg = i * 22.5;
@@ -133,7 +144,7 @@ for (let i = 0; i < 16; i++) {
     mini.style.top = centerY - Math.cos(rad) * radius + "px";
     container.appendChild(mini);
 
-    allDots.push({ el: mini, angle: angleDeg, size: 5, text: null });
+    allDots.push({ el: mini, angle: angleDeg, size: 5, type: "mini", text: null });
   }
 }
 
@@ -185,7 +196,7 @@ function detachDot(dotObj, i) {
   }
 
   const piece = document.createElement("div");
-  piece.classList.add("floating-piece");
+  piece.classList.add(dotObj.type === "main" ? "floating-piece-main" : "floating-piece-mini");
   piece.style.width = dotObj.size + "px";
   piece.style.height = dotObj.size + "px";
   piece.style.left = tip.x + "px";
@@ -217,7 +228,7 @@ function reattachDot(dotObj, i) {
   const dotY = dotRect.top - contRect.top + dotObj.el.offsetHeight/2;
 
   const piece = document.createElement("div");
-  piece.classList.add("floating-piece");
+  piece.classList.add(dotObj.type === "main" ? "floating-piece-main" : "floating-piece-mini");
   piece.style.width = dotObj.size + "px";
   piece.style.height = dotObj.size + "px";
   piece.style.left = dotX + "px";
@@ -288,4 +299,3 @@ tl.to(hand, { rotate: 360, duration: 1, ease: "none" });
 </script>
 </body>
 </html>
-
